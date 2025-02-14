@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Sentiment Analysis</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        .container {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            width: 50%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: slideIn 1s ease-out;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            color: #fff;
+            resize: none;
+        }
+        textarea::placeholder {
+            color: #ddd;
+        }
+        textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 25px;
+            font-size: 18px;
+            color: #fff;
+            background: #00a8e8;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 168, 232, 0.3);
+        }
+        button:hover {
+            background: #0077b6;
+            transform: scale(1.05);
+        }
+
+        .result-box {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-transform: capitalize;
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .positive {
+            background: rgba(0, 200, 83, 0.8);
+        }
+
+        .negative {
+            background: rgba(244, 67, 54, 0.8);
+        }
+
+        .neutral {
+            background: rgba(158, 158, 158, 0.8);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            form {
+                width: 80%;
+            }
+            h1 {
+                font-size: 2.2em;
+            }
+            p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-bg" autoplay loop muted>
+        <source src="{{ url_for('static', filename='videos/bgvideo_predict_page.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <div class="overlay"></div>
+
+    <div class="container">
+        <h1>Financial Sentiment Analysis</h1>
+        <p>Enter financial news to analyze sentiment:</p>
+        <form id="sentiment-form">
+            <textarea name="message" id="message" placeholder="Type financial news here..." required></textarea>
+            <br>
+            <button type="submit">Analyze Sentiment</button>
+        </form>
+
+        <div id="result-box" class="result-box"></div>
+    </div>
+
+    <script>
+        document.getElementById("sentiment-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            let formData = new FormData(this);
+            fetch("/predict", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                let resultBox = document.getElementById("result-box");
+                resultBox.textContent = "Sentiment: " + data.prediction;
+                resultBox.className = "result-box " + data.prediction.toLowerCase();
+                resultBox.style.opacity = "1";
+                resultBox.style.display = "block";
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+</html>

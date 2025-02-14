@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Sentiment Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            padding: 50px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        h1 {
+            color: #fcfcfc;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .news-ticker {
+            background-color: #333;
+            padding: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .ticker-text {
+            display: inline-block;
+            animation: ticker 15s linear infinite;
+            color: #f9f9f9;
+        }
+
+        .info-box {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            width: 60%;
+            margin: auto;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+            animation: fadeIn 2s ease-in-out;
+            text-align: justify;
+        }
+
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            background: #434040;
+            color: #ffffff;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .dark-mode-toggle:hover {
+            background: #e0a800;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 18px;
+            color: #ffffff;
+            background-color: #28a745;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .chart-box {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+            width: 45%;
+            height: 300px;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 250px;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+    
+    <h1>Financial News Sentiment Prediction</h1>
+
+    <div class="news-ticker">
+        <span class="ticker-text">📈 Dow Jones rises 200 points | 📉 Bitcoin drops 5% | 🏦 Fed announces new policies | 💰 Gold prices increase 2% |</span>
+    </div>
+
+    <div class="info-box">
+        <h2>Understanding Financial News Sentiment</h2>
+        <p>
+            Financial sentiment analysis is a technique used to analyze news, reports, and market data to understand 
+            investor sentiment. By processing news headlines and articles, machine learning models can determine whether 
+            the market is moving in a positive, negative, or neutral direction. This helps investors and analysts make 
+            better decisions based on real-time insights.
+        </p>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-box">
+            <h3>Market Sentiment Overview</h3>
+            <canvas id="sentimentChart"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h3>Stock Performance Comparison</h3>
+            <canvas id="stockChart"></canvas>
+        </div>
+    </div>
+
+    <button onclick="window.location.href='/predict'">Go to Prediction Page</button>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        let sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
+        new Chart(sentimentCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Positive', 'Neutral', 'Negative'],
+                datasets: [{
+                    data: [45, 30, 25],
+                    backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        let stockCtx = document.getElementById('stockChart').getContext('2d');
+        new Chart(stockCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [
+                    {
+                        label: 'Tech Stocks',
+                        data: [120, 130, 110, 140, 135, 150, 160],
+                        borderColor: '#007bff',
+                        fill: false
+                    },
+                    {
+                        label: 'Energy Stocks',
+                        data: [80, 85, 78, 90, 88, 92, 95],
+                        borderColor: '#28a745',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+</body>
+</html>
